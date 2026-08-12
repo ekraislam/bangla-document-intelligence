@@ -3,11 +3,11 @@ from PIL import Image
 import config
 from src.pdf_processor import pdf_to_images, load_image
 from src.ocr_engine import BanglaOCREngine
-from src.utils import save_extracted_text
+from src.utils import save_extracted_text, search_and_highlight
 
 # Set page layout & title
 st.set_page_config(
-    page_title="Bangla Document Intelligence - Phase 1 OCR",
+    page_title="Bangla Document Intelligence - Phase 2 Search",
     page_icon="📄",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -20,7 +20,7 @@ def get_ocr_engine():
 
 def main():
     st.title("📄 Bangla Document Intelligence System")
-    st.caption("Phase 1: Lightweight Bangla OCR for PDF & Image Files (CPU Optimized)")
+    st.caption("Phase 2: Lightweight Bangla OCR & Text Search System (CPU Optimized)")
 
     st.markdown("---")
 
@@ -37,7 +37,7 @@ def main():
         1. Upload a PDF or Image file containing Bangla text.
         2. Preview document pages on the left.
         3. Click **Extract Bangla Text**.
-        4. View, edit, download, or inspect the auto-saved text file.
+        4. View, edit, download, or search inside extracted text.
         """)
 
     # File Uploader
@@ -103,7 +103,7 @@ def main():
                 edited_text = st.text_area(
                     "Extracted Bangla Text",
                     value=extracted_text,
-                    height=350
+                    height=300
                 )
 
                 # Action Buttons (Download & Path Info)
@@ -118,6 +118,28 @@ def main():
                     )
                 with c_info:
                     st.caption(f"💾 **Auto-Saved File**: `{saved_path}`")
+
+                # Text Search Section
+                st.markdown("---")
+                st.subheader("🔍 Search Extracted Text")
+                search_query = st.text_input(
+                    "Search word or phrase",
+                    placeholder="Enter Bangla or English word to search...",
+                    key="search_query"
+                )
+
+                if search_query:
+                    highlighted_html, count = search_and_highlight(edited_text, search_query)
+                    if count > 0:
+                        st.success(f"Found **{count}** match{'es' if count > 1 else ''} for '{search_query}'")
+                    else:
+                        st.warning(f"No matches found for '{search_query}'")
+                    
+                    st.markdown(
+                        f'<div style="background-color: #f8f9fa; color: #212529; border: 1px solid #dee2e6; border-radius: 8px; padding: 15px; max-height: 280px; overflow-y: auto; font-family: sans-serif; white-space: pre-wrap; line-height: 1.6;">{highlighted_html}</div>',
+                        unsafe_allow_html=True
+                    )
+
 
 if __name__ == "__main__":
     main()
