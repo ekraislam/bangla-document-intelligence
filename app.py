@@ -31,12 +31,15 @@ CUSTOM_CSS = """
         font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif !important;
     }
 
-    [data-testid="stHeader"] {
-        background: transparent !important;
+    /* Hide Streamlit Default Header, Deploy Button & Menu Bar */
+    [data-testid="stHeader"], header, footer, #MainMenu, div[data-testid="stDecoration"] {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
     }
 
     .block-container {
-        padding-top: 1.5rem !important;
+        padding-top: 2rem !important;
         padding-bottom: 3.5rem !important;
         max-width: 1350px !important;
         background-color: #09090b !important;
