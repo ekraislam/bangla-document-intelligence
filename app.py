@@ -10,24 +10,24 @@ from src.utils import save_extracted_text, search_and_highlight
 # 1. Page Configuration
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="Bangla Document Intelligence",
-    page_icon="📄",
+    page_title="Bangla Document Intelligence — Claude Artifact UI",
+    page_icon="✦",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
 # -----------------------------------------------------------------------------
-# 2. Ultra-Stunning Glassmorphic Dark Design System with Animations (CSS Engine)
+# 2. Claude AI Artifact Panel Model Design System (CSS Engine)
 # -----------------------------------------------------------------------------
 CUSTOM_CSS = """
 <style>
-    /* Import Google Fonts for Pristine English & Bengali Typography */
+    /* Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
     /* Force Dark Canvas Viewport Overrides */
     html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-testid="stToolbar"] {
-        background-color: #07090e !important;
-        color: #f8fafc !important;
+        background-color: #0b0b0e !important;
+        color: #f4f4f5 !important;
         font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif !important;
     }
 
@@ -41,27 +41,12 @@ CUSTOM_CSS = """
     .block-container {
         padding-top: 2rem !important;
         padding-bottom: 3.5rem !important;
-        max-width: 1380px !important;
-        background-color: #07090e !important;
+        max-width: 1400px !important;
+        background-color: #0b0b0e !important;
     }
 
     /* KEYFRAME ANIMATIONS */
-    @keyframes titleGlowPulse {
-        0% {
-            background-position: 0% 50%;
-            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.35));
-        }
-        50% {
-            background-position: 100% 50%;
-            filter: drop-shadow(0 0 28px rgba(168, 85, 247, 0.85));
-        }
-        100% {
-            background-position: 0% 50%;
-            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.35));
-        }
-    }
-
-    @keyframes gradientBarFlow {
+    @keyframes titleShimmer {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
@@ -73,56 +58,49 @@ CUSTOM_CSS = """
         100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
     }
 
-    @keyframes cardFadeIn {
-        from { opacity: 0; transform: translateY(12px); }
+    @keyframes panelFadeIn {
+        from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Hero Header Banner Card with Top Glowing Accent Bar */
-    .hero-card {
-        background: rgba(17, 22, 37, 0.85);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+    /* Claude Top Header Banner Card */
+    .claude-banner-card {
+        background: #141417;
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 24px;
-        padding: 32px 36px;
-        margin-bottom: 28px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-        position: relative;
-        overflow: hidden;
-        animation: cardFadeIn 0.6s ease-out forwards;
+        border-radius: 20px;
+        padding: 28px 32px;
+        margin-bottom: 24px;
+        box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+        animation: panelFadeIn 0.5s ease-out forwards;
     }
 
-    .hero-accent-bar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899, #06b6d4, #6366f1);
-        background-size: 200% 200%;
-        animation: gradientBarFlow 4s ease infinite;
-    }
-
-    .hero-top-row {
+    .claude-header-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         flex-wrap: wrap;
         gap: 12px;
     }
 
-    .hero-badge {
-        background: rgba(99, 102, 241, 0.15);
-        border: 1px solid rgba(129, 140, 248, 0.3);
-        color: #c7d2fe;
-        font-size: 0.78rem;
-        font-weight: 700;
-        padding: 5px 14px;
-        border-radius: 9999px;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
+    .claude-brand-title {
+        font-size: 2.3rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        margin: 0;
+        background: linear-gradient(90deg, #ffffff 0%, #e4e4e7 40%, #d97706 100%);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: titleShimmer 8s ease infinite;
+    }
+
+    .claude-subtitle {
+        font-size: 1rem;
+        color: #a1a1aa;
+        margin: 0;
+        line-height: 1.6;
+        max-width: 850px;
     }
 
     .status-badge {
@@ -147,50 +125,62 @@ CUSTOM_CSS = """
         animation: greenPulse 2s infinite;
     }
 
-    /* ANIMATED SHIMMER TITLE */
-    .hero-title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        margin: 0 0 10px 0;
-        background: linear-gradient(90deg, #ffffff 0%, #c7d2fe 25%, #a855f7 50%, #38bdf8 75%, #ffffff 100%);
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: titleGlowPulse 6s ease-in-out infinite;
-    }
-
-    .hero-subtitle {
-        font-size: 1.02rem;
-        color: #94a3b8;
-        margin: 0;
-        line-height: 1.65;
-        max-width: 850px;
-    }
-
-    /* Glass Panels */
-    .glass-card {
-        background: rgba(17, 22, 37, 0.75) !important;
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+    /* Claude Split-Screen Panels */
+    .claude-panel {
+        background: #141417 !important;
         border: 1px solid rgba(255, 255, 255, 0.08) !important;
         border-radius: 20px;
         padding: 24px;
         margin-bottom: 24px;
         box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
-        animation: cardFadeIn 0.7s ease-out forwards;
+        animation: panelFadeIn 0.6s ease-out forwards;
+    }
+
+    /* Claude Artifact Output Panel Styling */
+    .artifact-canvas-panel {
+        background: #16161a !important;
+        border: 1px solid rgba(217, 119, 6, 0.25) !important;
+        border-radius: 22px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+        animation: panelFadeIn 0.7s ease-out forwards;
+    }
+
+    .artifact-header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 16px;
+        border-b: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 20px;
+    }
+
+    .artifact-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(217, 119, 6, 0.15);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #f59e0b;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 8px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
     }
 
     /* Streamlit File Uploader Dark Override */
     [data-testid="stFileUploader"] {
-        background-color: rgba(11, 15, 25, 0.8) !important;
-        border: 2px dashed rgba(99, 102, 241, 0.3) !important;
-        border-radius: 18px !important;
+        background-color: #18181c !important;
+        border: 2px dashed rgba(217, 119, 6, 0.35) !important;
+        border-radius: 16px !important;
         padding: 18px !important;
     }
 
     [data-testid="stFileUploader"]:hover {
-        border-color: rgba(129, 140, 248, 0.6) !important;
+        border-color: rgba(245, 158, 11, 0.6) !important;
     }
 
     [data-testid="stFileUploader"] section {
@@ -198,80 +188,79 @@ CUSTOM_CSS = """
     }
 
     [data-testid="stFileUploader"] span, [data-testid="stFileUploader"] small, [data-testid="stFileUploader"] p {
-        color: #94a3b8 !important;
+        color: #a1a1aa !important;
     }
 
-    /* Metric Stat Cards */
-    .stat-card-box {
-        background: rgba(11, 15, 25, 0.75) !important;
-        border: 1px solid rgba(99, 102, 241, 0.2) !important;
-        border-radius: 16px;
-        padding: 18px 14px;
+    /* Metric Stat Cards Pill */
+    .stat-pill-box {
+        background: #1a1a1f !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 14px;
+        padding: 16px 12px;
         text-align: center;
         transition: transform 0.2s ease, border-color 0.2s ease;
-        animation: cardFadeIn 0.8s ease-out forwards;
     }
 
-    .stat-card-box:hover {
-        transform: translateY(-3px);
-        border-color: rgba(168, 85, 247, 0.5) !important;
+    .stat-pill-box:hover {
+        transform: translateY(-2px);
+        border-color: rgba(245, 158, 11, 0.4) !important;
     }
 
-    .stat-card-val {
-        font-size: 1.75rem;
+    .stat-pill-val {
+        font-size: 1.65rem;
         font-weight: 800;
-        color: #38bdf8 !important;
+        color: #f59e0b !important;
         line-height: 1.2;
     }
 
-    .stat-card-lbl {
-        font-size: 0.76rem;
-        color: #94a3b8 !important;
+    .stat-pill-lbl {
+        font-size: 0.75rem;
+        color: #a1a1aa !important;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.05em;
         margin-top: 4px;
     }
 
-    /* Primary Glowing Button */
+    /* Primary Glowing Button (Claude Warm Amber Gradient) */
     .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
         border: none !important;
         color: #ffffff !important;
         font-weight: 700 !important;
         padding: 12px 24px !important;
-        border-radius: 14px !important;
-        box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.45) !important;
-        transition: all 0.3s ease !important;
+        border-radius: 12px !important;
+        box-shadow: 0 8px 20px -4px rgba(217, 119, 6, 0.45) !important;
+        transition: all 0.2s ease !important;
     }
 
     .stButton > button[kind="primary"]:hover {
         transform: translateY(-2px) !important;
-        box-shadow: 0 14px 30px -6px rgba(139, 92, 246, 0.6) !important;
+        box-shadow: 0 12px 24px -4px rgba(245, 158, 11, 0.6) !important;
     }
 
-    /* Monospace Text Area */
+    /* Monospace Text Area Reader */
     .stTextArea textarea {
         font-family: 'JetBrains Mono', 'Noto Sans Bengali', monospace !important;
-        background-color: #080b13 !important;
-        color: #f8fafc !important;
-        border: 1px solid rgba(148, 163, 184, 0.25) !important;
-        border-radius: 16px !important;
+        background-color: #0e0e11 !important;
+        color: #f4f4f5 !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 14px !important;
         padding: 18px !important;
         font-size: 0.98rem !important;
         line-height: 1.7 !important;
     }
 
     .stTextArea textarea:focus {
-        border-color: #8b5cf6 !important;
-        box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25) !important;
+        border-color: #f59e0b !important;
+        box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25) !important;
     }
 
-    /* Search Results Container */
+    /* Search Results Panel */
     .search-results-panel {
-        background-color: #080b13;
-        color: #f8fafc;
-        border: 1px solid rgba(99, 102, 241, 0.3);
+        background-color: #0e0e11;
+        color: #f4f4f5;
+        border: 1px solid rgba(245, 158, 11, 0.3);
         border-radius: 14px;
         padding: 20px;
         max-height: 320px;
@@ -282,17 +271,17 @@ CUSTOM_CSS = """
         font-size: 0.98rem;
     }
 
-    /* High Contrast Text Rules */
+    /* High Contrast Rules */
     h1, h2, h3, h4, h5, h6 {
         color: #ffffff !important;
     }
 
     p, span, label {
-        color: #e2e8f0;
+        color: #e4e4e7;
     }
 
     [data-testid="stSidebar"] {
-        background-color: #0c0f1a !important;
+        background-color: #141417 !important;
         border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
     }
 </style>
@@ -301,10 +290,10 @@ st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 
 # -----------------------------------------------------------------------------
-# 3. Helper Functions & Engine Cache
+# 3. Helper Functions & Cache
 # -----------------------------------------------------------------------------
 def format_bytes(size_in_bytes: int) -> str:
-    """Format file size into human-readable string (KB / MB)."""
+    """Format raw byte size into human-readable string (KB / MB)."""
     if size_in_bytes < 1024:
         return f"{size_in_bytes} Bytes"
     elif size_in_bytes < 1024 * 1024:
@@ -324,18 +313,16 @@ def get_ocr_engine():
 # -----------------------------------------------------------------------------
 def main():
     # -------------------------------------------------------------------------
-    # Top Hero Header Banner
+    # Top Claude Header Card
     # -------------------------------------------------------------------------
     st.markdown("""
-    <div class="hero-card">
-        <div class="hero-accent-bar"></div>
-        <div class="hero-top-row">
-            <span class="hero-badge">⚡ Intelligent Bangla Document Engine</span>
+    <div class="claude-banner-card">
+        <div class="claude-header-row">
+            <h1 class="claude-brand-title">Bangla Document Intelligence</h1>
             <span class="status-badge"><span class="pulse-dot"></span> EasyOCR Engine Ready</span>
         </div>
-        <h1 class="hero-title">Bangla Document Intelligence</h1>
-        <p class="hero-subtitle">
-            High-precision optical character recognition for Bangla and English documents. Extract structured, editable text from multi-page PDFs or image scans with real-time in-memory keyword search.
+        <p class="claude-subtitle">
+            Enterprise optical character recognition for Bangla and English documents. Extract structured, editable text from multi-page PDFs or image scans with real-time in-memory keyword search.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -346,7 +333,7 @@ def main():
         st.caption("Bangla Document Intelligence v2.5")
         st.markdown("---")
         st.markdown("""
-        <div style="font-size: 0.88rem; color: #94a3b8; line-height: 1.8;">
+        <div style="font-size: 0.88rem; color: #a1a1aa; line-height: 1.8;">
             <div>• <strong>Mode</strong>: CPU Optimized</div>
             <div>• <strong>Languages</strong>: Bangla + English</div>
             <div>• <strong>Formats</strong>: PDF, PNG, JPG, JPEG</div>
@@ -363,7 +350,6 @@ def main():
         help="Select a Bangla PDF or scanned image file."
     )
 
-    # Empty State: No Document Uploaded
     if uploaded_file is not None:
         file_bytes = uploaded_file.read()
         file_name = uploaded_file.name
@@ -377,7 +363,7 @@ def main():
                 img = load_image(file_bytes)
                 images = [img]
 
-        # File Metadata Grid (100% Real Data)
+        # File Metadata Grid (100% Real Calculated Data)
         m1, m2, m3, m4 = st.columns(4)
         m1.metric("File Name", file_name)
         m2.metric("File Format", file_ext)
@@ -387,14 +373,14 @@ def main():
         st.markdown("---")
 
         # -------------------------------------------------------------------------
-        # Main Workspace Grid (Two Columns)
+        # Claude Split-Screen Artifact Panel Workspace (Two Columns)
         # -------------------------------------------------------------------------
         col1, col2 = st.columns([1, 1], gap="large")
 
-        # --- LEFT COLUMN: Document Viewport ---
+        # --- LEFT PANEL: Input Document & Viewport ---
         with col1:
-            st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-            st.markdown("<h3 style='margin-top: 0;'>🖼️ Document Viewport</h3>", unsafe_allow_html=True)
+            st.markdown('<div class="claude-panel">', unsafe_allow_html=True)
+            st.markdown("<h3 style='margin-top: 0;'>📄 Input Viewport</h3>", unsafe_allow_html=True)
 
             ctrl1, ctrl2 = st.columns([1, 1])
             with ctrl1:
@@ -420,10 +406,19 @@ def main():
             )
             st.markdown('</div>', unsafe_allow_html=True)
 
-        # --- RIGHT COLUMN: OCR Extraction & Intelligence ---
+        # --- RIGHT PANEL: Claude Artifact Output Canvas ---
         with col2:
-            st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-            st.markdown("<h3 style='margin-top: 0;'>📝 Extracted Intelligence</h3>", unsafe_allow_html=True)
+            st.markdown('<div class="artifact-canvas-panel">', unsafe_allow_html=True)
+            
+            # ARTIFACT HEADER BAR
+            st.markdown("""
+            <div class="artifact-header-bar">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="artifact-tag">✦ Artifact Canvas</span>
+                    <h3 style="margin: 0; font-size: 1.1rem;">Extracted Intelligence</h3>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
 
             if st.button("✨ Extract Bangla Text", type="primary", width="stretch"):
                 with st.spinner("Extracting Bangla & English text via EasyOCR... (Please wait)"):
@@ -443,59 +438,59 @@ def main():
 
                 st.success(f"✅ Extraction completed! Saved to `{saved_path.name}`")
 
-                # OCR Statistics Dashboard (100% Real Calculated Data)
+                # Real Document Statistics Dashboard (100% Real Data)
                 char_count = len(extracted_text)
                 word_count = len(extracted_text.split())
                 line_count = len([line for line in extracted_text.splitlines() if line.strip()])
                 page_count = len(images)
 
-                st.markdown("##### 📊 Document Statistics")
+                st.markdown("##### 📊 Artifact Document Statistics")
                 s1, s2, s3, s4 = st.columns(4)
 
                 with s1:
                     st.markdown(f"""
-                    <div class="stat-card-box">
-                        <div class="stat-card-val">{char_count:,}</div>
-                        <div class="stat-card-lbl">Characters</div>
+                    <div class="stat-pill-box">
+                        <div class="stat-pill-val">{char_count:,}</div>
+                        <div class="stat-pill-lbl">Characters</div>
                     </div>
                     """, unsafe_allow_html=True)
                 with s2:
                     st.markdown(f"""
-                    <div class="stat-card-box">
-                        <div class="stat-card-val">{word_count:,}</div>
-                        <div class="stat-card-lbl">Words</div>
+                    <div class="stat-pill-box">
+                        <div class="stat-pill-val">{word_count:,}</div>
+                        <div class="stat-pill-lbl">Words</div>
                     </div>
                     """, unsafe_allow_html=True)
                 with s3:
                     st.markdown(f"""
-                    <div class="stat-card-box">
-                        <div class="stat-card-val">{line_count:,}</div>
-                        <div class="stat-card-lbl">Lines</div>
+                    <div class="stat-pill-box">
+                        <div class="stat-pill-val">{line_count:,}</div>
+                        <div class="stat-pill-lbl">Lines</div>
                     </div>
                     """, unsafe_allow_html=True)
                 with s4:
                     st.markdown(f"""
-                    <div class="stat-card-box">
-                        <div class="stat-card-val">{page_count}</div>
-                        <div class="stat-card-lbl">Pages</div>
+                    <div class="stat-pill-box">
+                        <div class="stat-pill-val">{page_count}</div>
+                        <div class="stat-pill-lbl">Pages</div>
                     </div>
                     """, unsafe_allow_html=True)
 
                 st.markdown("<br>", unsafe_allow_html=True)
 
-                # Editable Monospace Reader/Editor
+                # Editable Monospace Reader/Editor inside Artifact Canvas
                 edited_text = st.text_area(
-                    "Extracted Text Editor",
+                    "Extracted Text Reader",
                     value=extracted_text,
                     height=280,
-                    help="Edit extracted text directly inside this editor."
+                    help="Edit extracted text directly inside this reader."
                 )
 
-                # Action Toolbar
+                # Artifact Action Toolbar
                 btn1, btn2, btn3 = st.columns([1, 1, 1])
                 with btn1:
                     st.download_button(
-                        label="📥 Download TXT",
+                        label="📥 Export TXT",
                         data=edited_text,
                         file_name=f"extracted_{file_name}.txt",
                         mime="text/plain",
@@ -510,16 +505,16 @@ def main():
                         st.session_state.pop("saved_path", None)
                         st.rerun()
 
-                st.caption(f"💾 **Auto-Saved Path**: `{saved_path}`")
+                st.caption(f"💾 **Auto-Saved Output**: `{saved_path}`")
 
-                # Real-Time Text Search Section
+                # Search inside Artifact
                 st.markdown("---")
-                st.markdown("### 🔍 Search Inside Document")
+                st.markdown("### 🔍 Search Inside Artifact")
 
                 search_query = st.text_input(
                     "Search query",
                     placeholder="Enter Bangla (e.g. বাংলা) or English keyword...",
-                    key="search_anim_input"
+                    key="claude_artifact_search_input"
                 )
 
                 if search_query:
@@ -537,7 +532,7 @@ def main():
             else:
                 st.markdown("""
                 <div style="text-align: center; padding: 36px 12px;">
-                    <p style="font-size: 0.92rem; color: #94a3b8;">Click <strong>Extract Bangla Text</strong> above to process document pages.</p>
+                    <p style="font-size: 0.92rem; color: #a1a1aa;">Click <strong>Extract Bangla Text</strong> above to generate artifact content.</p>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -545,9 +540,9 @@ def main():
 
     else:
         st.markdown("""
-        <div class="glass-card" style="text-align: center; padding: 48px 24px;">
+        <div class="claude-panel" style="text-align: center; padding: 48px 24px;">
             <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 6px;">Document Workspace Ready</h3>
-            <p style="font-size: 0.92rem; color: #94a3b8; margin: 0;">Upload a Bangla PDF or scanned image file above to begin text extraction.</p>
+            <p style="font-size: 0.92rem; color: #a1a1aa; margin: 0;">Upload a Bangla PDF or scanned image file above to begin text extraction.</p>
         </div>
         """, unsafe_allow_html=True)
 
