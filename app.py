@@ -421,7 +421,7 @@ def main():
             """, unsafe_allow_html=True)
 
             if st.button("✨ Extract Bangla Text", type="primary", width="stretch"):
-                with st.spinner("Extracting Bangla & English text via EasyOCR... (Please wait)"):
+                with st.spinner("⏳ Extracting text via EasyOCR Neural Network... (Takes ~10-20s per page on CPU for high precision)"):
                     ocr = get_ocr_engine()
                     results = ocr.process_document_pages(images)
                     extracted_text = results["full_text"]
