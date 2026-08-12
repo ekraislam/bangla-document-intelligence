@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bangla Document Intelligence — Enterprise AI Dashboard</title>
+    <title>Bangla Document Intelligence — Dashboard UI</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,20 +22,16 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            bg: '#0B0F19',
-                            card: 'rgba(17, 24, 39, 0.7)',
-                            border: 'rgba(255, 255, 255, 0.1)',
-                            accent: '#6366F1',
-                            violet: '#8B5CF6',
-                            cyan: '#06B6D4',
-                            emerald: '#10B981'
-                        }
+                        darkCanvas: '#0A0C14',
+                        darkCard: '#131826',
+                        darkCardHeader: '#1A2033',
+                        neonPurple: '#A855F7',
+                        neonCyan: '#06B6D4',
+                        neonPink: '#EC4899'
                     },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'Noto Sans Bengali', 'sans-serif'],
-                        bengali: ['Noto Sans Bengali', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace']
+                        bengali: ['Noto Sans Bengali', 'sans-serif']
                     }
                 }
             }
@@ -44,353 +40,338 @@
 
     <style>
         body {
-            background-color: #0B0F19;
+            background-color: #06070B;
             color: #F8FAFC;
             font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', sans-serif;
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
-            background-attachment: fixed;
         }
 
-        .glass-panel {
-            background: rgba(17, 24, 39, 0.65);
+        /* DUAL NEON GLOW CONTAINER FRAME */
+        .neon-window-frame {
+            position: relative;
+            background: #0E121E;
+            border-radius: 28px;
+            box-shadow: 
+                -20px -20px 80px rgba(168, 85, 247, 0.35),
+                20px 20px 80px rgba(6, 182, 212, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Glassmorphic Panel Cards */
+        .glass-card {
+            background: rgba(19, 24, 38, 0.7);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
         }
 
-        .glass-panel-glow {
-            background: rgba(17, 24, 39, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(99, 102, 241, 0.25);
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.15), 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+        .purple-glow-btn {
+            background: linear-gradient(135deg, #A855F7 0%, #7E22CE 100%);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+            transition: all 0.3s ease;
+        }
+        .purple-glow-btn:hover {
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.8);
+            transform: scale(1.05);
         }
 
-        .glow-button {
-            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #06B6D4 100%);
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Token Highlights from Reference Image */
+        .token-purple {
+            background: rgba(168, 85, 247, 0.25);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            color: #E9D5FF;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-weight: 600;
         }
 
-        .glow-button:hover {
-            box-shadow: 0 0 30px rgba(99, 102, 241, 0.6), 0 0 15px rgba(6, 182, 212, 0.4);
-            transform: translateY(-2px);
+        .token-cyan {
+            background: rgba(6, 182, 212, 0.25);
+            border: 1px solid rgba(6, 182, 212, 0.4);
+            color: #CFFAFE;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-weight: 600;
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(11, 15, 25, 0.8);
+            background: rgba(10, 12, 20, 0.5);
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(99, 102, 241, 0.3);
+            background: rgba(168, 85, 247, 0.3);
             border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(99, 102, 241, 0.6);
-        }
-
-        mark {
-            background-color: #F59E0B;
-            color: #000000;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 700;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+<body class="min-h-screen p-4 sm:p-8 flex items-center justify-center">
 
-    <!-- TOP HEADER BAR -->
-    <header class="sticky top-0 z-50 glass-panel border-b border-white/10 px-6 py-4">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            
-            <!-- BRAND & LOGO -->
-            <div class="flex items-center gap-4">
-                <div class="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-cyan-400 p-[1px] shadow-[0_0_20px_rgba(99,102,241,0.35)]">
-                    <div class="w-full h-full bg-brand-bg rounded-[15px] flex items-center justify-center">
-                        <i data-lucide="cpu" class="w-6 h-6 text-indigo-400"></i>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex items-center gap-3">
-                        <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
-                            Bangla Document Intelligence
-                        </h1>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                            System Operational
-                        </span>
-                    </div>
-                    <p class="text-xs text-slate-400">Enterprise AI Engine • Real-time Bangla & English OCR</p>
-                </div>
-            </div>
-
-            <!-- RIGHT METRICS & CTA -->
-            <div class="flex items-center gap-6">
-                <div class="hidden md:flex items-center gap-6 text-xs text-slate-400 border-r border-white/10 pr-6">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
-                        <span>Latency: <strong class="text-slate-200 font-semibold">1.2s</strong></span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="file-check-2" class="w-4 h-4 text-indigo-400"></i>
-                        <span>Processed: <strong class="text-slate-200 font-semibold">1.4M+ Docs</strong></span>
-                    </div>
-                </div>
-
-                <a href="#docs" class="text-xs font-semibold text-slate-300 hover:text-indigo-400 transition-colors flex items-center gap-1.5">
-                    <i data-lucide="book-open" class="w-4 h-4"></i>
-                    Docs
-                </a>
-
-                <button class="glow-button px-4 py-2 rounded-xl text-xs font-bold text-white flex items-center gap-2">
-                    <i data-lucide="rocket" class="w-4 h-4"></i>
-                    Deploy Model
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <!-- MAIN DASHBOARD CONTENT -->
-    <main class="max-w-7xl mx-auto w-full px-6 py-8 flex-1">
+    <!-- MAIN NEON FLOATING WINDOW CONTAINER -->
+    <div class="neon-window-frame w-full max-w-6xl overflow-hidden p-6">
         
-        <!-- DASHBOARD GRID -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="flex flex-col lg:flex-row gap-6">
             
-            <!-- LEFT PANEL: UPLOAD & PREVIEW (5 COLS) -->
-            <section class="lg:col-span-5 space-y-6">
-                
-                <!-- UPLOAD CARD CONTAINER -->
-                <div class="glass-panel-glow rounded-3xl p-6 relative overflow-hidden group">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="upload-cloud" class="w-5 h-5 text-indigo-400"></i>
-                            <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Document Ingestion</h2>
-                        </div>
-                        <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-white/5">Max 50MB</span>
-                    </div>
-
-                    <!-- DROPZONE -->
-                    <div id="dropzone" class="border-2 border-dashed border-indigo-500/30 hover:border-indigo-400 rounded-2xl p-8 text-center bg-slate-950/40 hover:bg-slate-900/50 transition-all cursor-pointer relative">
-                        <input type="file" id="fileInput" class="hidden" accept=".pdf,.png,.jpg,.jpeg">
-                        
-                        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
-                            <i data-lucide="file-up" class="w-7 h-7"></i>
-                        </div>
-                        
-                        <h3 class="text-base font-bold text-slate-100 mb-1">Drag & drop document here</h3>
-                        <p class="text-xs text-slate-400 mb-4">Upload scanned Bangla PDFs or high-res images</p>
-
-                        <!-- FORMAT PILLS -->
-                        <div class="flex items-center justify-center gap-2">
-                            <span class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-800/80 text-indigo-300 border border-indigo-500/20">PDF</span>
-                            <span class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-800/80 text-cyan-300 border border-cyan-500/20">PNG</span>
-                            <span class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-800/80 text-violet-300 border border-violet-500/20">JPG</span>
+            <!-- LEFT VERTICAL SIDEBAR NAVIGATION -->
+            <aside class="w-full lg:w-48 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-white/5 pr-0 lg:pr-6 pb-4 lg:pb-0">
+                <div class="space-y-6">
+                    <!-- LOGO ICON -->
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-purple-600/30 border border-purple-500/50 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+                            <i data-lucide="file-text" class="w-5 h-5"></i>
                         </div>
                     </div>
 
-                    <!-- LIVE UPLOAD PROGRESS (HIDDEN BY DEFAULT, SHOWN ON UPLOAD) -->
-                    <div id="progressContainer" class="hidden mt-6 space-y-2">
-                        <div class="flex justify-between text-xs font-semibold">
-                            <span class="text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin text-indigo-400"></i>
-                                Uploading & Processing...
-                            </span>
-                            <span id="progressText" class="text-indigo-400">65%</span>
-                        </div>
-                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                            <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-cyan-400 h-full w-[65%] transition-all duration-300"></div>
-                        </div>
-                        <p class="text-[11px] text-slate-400 text-right">Est. OCR Time: ~1.5 sec</p>
-                    </div>
+                    <!-- NAVIGATION MENU -->
+                    <nav class="space-y-1">
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-purple-600/20 text-purple-300 font-semibold text-xs border border-purple-500/30 shadow-[0_0_12px_rgba(168,85,247,0.25)]">
+                            <i data-lucide="layout-grid" class="w-4 h-4 text-purple-400"></i>
+                            Dashboard
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 text-xs font-medium transition-colors">
+                            <i data-lucide="folder-closed" class="w-4 h-4"></i>
+                            Projects
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 text-xs font-medium transition-colors">
+                            <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+                            Analytics
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 text-xs font-medium transition-colors">
+                            <i data-lucide="users" class="w-4 h-4"></i>
+                            Users
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/5 text-xs font-medium transition-colors">
+                            <i data-lucide="settings" class="w-4 h-4"></i>
+                            Settings
+                        </a>
+                    </nav>
                 </div>
 
-                <!-- DOCUMENT PREVIEW PANEL -->
-                <div class="glass-panel rounded-3xl p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="eye" class="w-5 h-5 text-cyan-400"></i>
-                            <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Document Viewport</h2>
-                        </div>
-                        <span id="pageIndicator" class="text-xs font-semibold text-slate-400">Page 1 of 1</span>
-                    </div>
-
-                    <!-- PREVIEW CANVAS CONTAINER -->
-                    <div class="relative bg-slate-950/80 rounded-2xl border border-white/5 p-4 min-h-[380px] flex items-center justify-center overflow-hidden group">
-                        <img id="previewImage" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop" alt="Document Sample" class="max-h-[360px] object-contain rounded-lg shadow-2xl transition-transform duration-300 group-hover:scale-[1.02]">
-
-                        <!-- VIEWPORT OVERLAY CONTROLS -->
-                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-full text-xs text-slate-300">
-                            <button id="zoomOut" class="p-1 hover:text-white transition-colors"><i data-lucide="zoom-out" class="w-4 h-4"></i></button>
-                            <span id="zoomVal" class="font-semibold text-indigo-300 min-w-[40px] text-center">100%</span>
-                            <button id="zoomIn" class="p-1 hover:text-white transition-colors"><i data-lucide="zoom-in" class="w-4 h-4"></i></button>
-                        </div>
-                    </div>
+                <!-- SIDEBAR FOOTER -->
+                <div class="pt-6 border-t border-white/5 space-y-1">
+                    <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-slate-200 text-xs font-medium">
+                        <i data-lucide="settings-2" class="w-4 h-4"></i>
+                        Settings
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-400 hover:text-slate-200 text-xs font-medium">
+                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                        Help
+                    </a>
                 </div>
+            </aside>
 
-            </section>
-
-            <!-- RIGHT PANEL: EXTRACTED OUTPUT & INTELLIGENCE (7 COLS) -->
-            <section class="lg:col-span-7 space-y-6">
+            <!-- MAIN WORKSPACE & DASHBOARD CONTENT -->
+            <div class="flex-1 space-y-6">
                 
-                <!-- INTELLIGENCE PANEL CONTAINER -->
-                <div class="glass-panel-glow rounded-3xl p-6 flex flex-col h-full min-h-[620px]">
+                <!-- TOP BAR TITLE & STATUS -->
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <h1 class="text-xl font-bold text-slate-100">Dashboard</h1>
                     
-                    <!-- WORKSPACE HEADER BAR -->
-                    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/10">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
-                                <i data-lucide="file-text" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-base font-bold text-slate-100">Extracted Intelligence</h2>
-                                <p class="text-xs text-slate-400">EasyOCR Neural Text Stream</p>
+                    <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="text-slate-400">Status:</span>
+                            <span class="text-cyan-400 font-semibold flex items-center gap-1">Processing...</span>
+                        </div>
+
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="text-slate-400">Confidence</span>
+                            <div class="w-24 bg-slate-800 rounded-full h-1.5 overflow-hidden border border-white/5">
+                                <div class="bg-gradient-to-r from-purple-500 to-cyan-400 h-full w-[85%]"></div>
                             </div>
                         </div>
 
-                        <!-- ACCURACY CONFIDENCE BADGE & METRICS -->
+                        <!-- PROFILE AVATAR & ICONS -->
                         <div class="flex items-center gap-3">
-                            <div class="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold">
-                                <i data-lucide="shield-check" class="w-4 h-4"></i>
-                                <span>98.5% Confidence</span>
-                            </div>
+                            <button class="p-1.5 rounded-lg text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 transition-colors">
+                                <i data-lucide="mail" class="w-4 h-4"></i>
+                            </button>
+                            <button class="p-1.5 rounded-lg text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 transition-colors relative">
+                                <i data-lucide="bell" class="w-4 h-4"></i>
+                                <span class="w-2 h-2 rounded-full bg-pink-500 absolute top-1 right-1"></span>
+                            </button>
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop" class="w-7 h-7 rounded-full object-cover border border-purple-500/40" alt="Avatar">
                         </div>
                     </div>
+                </div>
 
-                    <!-- ACTION TOOLBAR -->
-                    <div class="flex flex-wrap items-center justify-between gap-3 py-4 border-b border-white/5">
+                <!-- UPPER TWO-COLUMN GRID -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- LEFT CARD: UPLOAD BANGLA DOCUMENTS -->
+                    <div class="glass-card p-6 flex flex-col justify-between border border-dashed border-purple-500/20 relative group">
                         
-                        <!-- LEFT ACTION BUTTONS -->
-                        <div class="flex items-center gap-2">
-                            <button id="copyBtn" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/5 flex items-center gap-1.5 transition-all">
-                                <i data-lucide="copy" class="w-3.5 h-3.5 text-indigo-400"></i>
-                                Copy
-                            </button>
-
-                            <div class="relative">
-                                <button id="exportDropdownBtn" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/5 flex items-center gap-1.5 transition-all">
-                                    <i data-lucide="download" class="w-3.5 h-3.5 text-cyan-400"></i>
-                                    Export
-                                    <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
-                                </button>
+                        <div class="text-center py-6">
+                            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300">
+                                <i data-lucide="file-up" class="w-8 h-8"></i>
                             </div>
 
-                            <button id="clearBtn" class="px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-red-500/20 text-slate-300 hover:text-red-400 text-xs font-semibold border border-white/5 flex items-center gap-1.5 transition-all">
-                                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                                Clear
+                            <h3 class="text-base font-bold text-slate-100 mb-1">Upload Bangla Documents</h3>
+                            <p class="text-xs text-slate-400 mb-6">Drag & Drop PDFs, Images, or Scans</p>
+
+                            <!-- PURPLE GLOW UPLOAD BUTTON -->
+                            <button class="purple-glow-btn w-12 h-12 rounded-2xl mx-auto flex items-center justify-center text-white">
+                                <i data-lucide="upload" class="w-5 h-5"></i>
                             </button>
                         </div>
 
-                        <!-- LIVE SEARCH BOX INSIDE OUTPUT -->
-                        <div class="relative flex-1 max-w-xs">
-                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-                            <input type="text" id="searchInput" placeholder="Search Bangla / English..." class="w-full bg-slate-950/80 border border-white/10 rounded-xl pl-9 pr-4 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors">
+                        <!-- PROGRESS BAR AT BOTTOM OF UPLOAD CARD -->
+                        <div class="mt-4 pt-4 border-t border-white/5 space-y-1.5">
+                            <div class="flex items-center justify-between text-xs text-slate-400 font-medium">
+                                <span>Invoice_June_2024.pdf</span>
+                                <i data-lucide="x" class="w-3.5 h-3.5 cursor-pointer hover:text-white"></i>
+                            </div>
+                            <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
+                                <div class="bg-gradient-to-r from-purple-500 to-cyan-400 h-full w-full"></div>
+                            </div>
+                            <p class="text-[11px] text-slate-400">Processing file: 100%...</p>
                         </div>
                     </div>
 
-                    <!-- FORMATTED BENGALI TEXT AREA -->
-                    <div class="flex-1 py-4 flex flex-col">
-                        <textarea id="ocrTextArea" class="w-full flex-1 min-h-[280px] bg-slate-950/90 border border-white/5 rounded-2xl p-4 text-sm font-bengali text-slate-200 leading-relaxed focus:outline-none focus:border-indigo-500/50 resize-none selection:bg-indigo-500/40" placeholder="Extracted Bangla text will appear here..."></textarea>
-                    </div>
+                    <!-- RIGHT CARD: LIVE PREVIEW OUTPUT -->
+                    <div class="glass-card p-6 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-200 mb-4 flex items-center justify-between">
+                                <span>Live preview</span>
+                            </h3>
 
-                    <!-- HIGHLIGHTED SEARCH VIEWPORT (DYNAMIC) -->
-                    <div id="searchResultsViewport" class="hidden mt-2 p-4 rounded-2xl bg-slate-950 border border-indigo-500/20 max-h-[160px] overflow-y-auto text-sm font-bengali text-slate-300 leading-relaxed">
-                        <!-- Dynamic Marks -->
-                    </div>
-
-                    <!-- FOOTER STATS -->
-                    <div class="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-400 font-semibold">
-                        <div class="flex items-center gap-4">
-                            <span>Chars: <strong id="charCount" class="text-indigo-300 font-bold">142</strong></span>
-                            <span>Words: <strong id="wordCount" class="text-cyan-300 font-bold">28</strong></span>
-                            <span>Lines: <strong id="lineCount" class="text-violet-300 font-bold">4</strong></span>
+                            <!-- FORMATTED BENGALI TEXT WITH HIGHLIGHTED TOKENS -->
+                            <div class="text-xs font-bengali text-slate-300 leading-relaxed space-y-2.5 max-h-[220px] overflow-y-auto pr-2">
+                                <p>
+                                    বাংলাদেশের ঐতিহাসিক সংবিধানের ধারা অনুযায়ী <span class="token-purple">২০২৪/১৭২১</span> নম্বর এক আদেশের মাধ্যমে প্রসেসিং সম্পূর্ণ করা হইল। ডিজিটাল মাধ্যমে ব্যাংকিং কার্যক্রম পরিচালনার মাধ্যমে সাধারণ মানুষের দোরগোড়ায় সেবা পৌঁছে দেওয়া সম্ভব হইয়াছে।
+                                </p>
+                                <p>
+                                    এমতাবস্থায় উক্ত কার্যক্রমে বাংলা ভাষায় সার্ভিস সংযোগ সংক্রান্ত নিয়মকানুন প্রাক্কলন করা যায়। <span class="token-purple">১৯.০৬.২০১৯</span> তারিখে সকল সেবা প্রার্থীর জন্য উন্মুক্ত করা হইল। <span class="token-purple">২,৩৭৪</span> গ্রাহকের গ্রাহকত্ব অনুমোদন পূর্বক নিম্নোক্ত বিষয়াদি প্রদান করা যায়।
+                                </p>
+                                <p>
+                                    প্রতিরক্ষা খাতের চালান বাবদ জমা করা <span class="token-purple">২৫,৬৫৩.৫০</span> টাকা এবং <span class="token-purple">৭৯.৫০</span> টাকা ব্যাংকিং ব্যবস্থার মাধ্যমে বাংলাদেশ ব্যাংক কর্তৃক ব্যাংকিং সেবা <span class="token-cyan">ব্যাংকড্রাফট</span> মাধ্যমে সম্পন্ন করা হইয়াছে।
+                                </p>
+                            </div>
                         </div>
-                        <span class="text-emerald-400 flex items-center gap-1">
-                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Auto-Saved
-                        </span>
+
+                        <!-- CARD ACTION CONTROLS -->
+                        <div class="pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-semibold border border-white/5">Copy</button>
+                                <button class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 font-semibold border border-white/5">Export TXT</button>
+                            </div>
+                            <span class="text-emerald-400 font-semibold flex items-center gap-1">
+                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Live Synced
+                            </span>
+                        </div>
                     </div>
 
                 </div>
 
-            </section>
+                <!-- BOTTOM ROW: 4 ANALYTICS METRIC CARDS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- CARD 1: OVERALL ACCURACY -->
+                    <div class="glass-card p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-400">Overall Accuracy</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">High</span>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <span class="text-2xl font-extrabold text-white">98.6%</span>
+                            <!-- CIRCLE METER -->
+                            <div class="relative w-9 h-9 flex items-center justify-center">
+                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                    <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="text-purple-500" stroke-dasharray="98, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <span class="absolute text-[10px] font-bold text-slate-300">98</span>
+                            </div>
+                        </div>
+                        <!-- MINI WAVE SVG -->
+                        <div class="h-6 w-full opacity-60">
+                            <svg class="w-full h-full" viewBox="0 0 100 25" fill="none">
+                                <path d="M0 15 Q25 5 50 18 T100 8" stroke="#A855F7" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- CARD 2: PROCESSING SPEED -->
+                    <div class="glass-card p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-400">Processing Speed</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">High</span>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <span class="text-2xl font-extrabold text-white">1.2s/pg</span>
+                        </div>
+                        <!-- EQUALIZER BAR GRAPH GRAPHIC -->
+                        <div class="h-6 w-full flex items-end justify-between gap-1 opacity-70">
+                            <div class="w-full bg-cyan-500/30 rounded-t h-[40%]"></div>
+                            <div class="w-full bg-cyan-500/50 rounded-t h-[70%]"></div>
+                            <div class="w-full bg-cyan-500/40 rounded-t h-[50%]"></div>
+                            <div class="w-full bg-cyan-500/80 rounded-t h-[90%]"></div>
+                            <div class="w-full bg-cyan-500/60 rounded-t h-[60%]"></div>
+                            <div class="w-full bg-cyan-500/90 rounded-t h-[80%]"></div>
+                            <div class="w-full bg-cyan-500/40 rounded-t h-[45%]"></div>
+                        </div>
+                    </div>
+
+                    <!-- CARD 3: LANGUAGE DETECTION -->
+                    <div class="glass-card p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-400">Language Detection</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">High</span>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <div>
+                                <span class="text-xl font-extrabold text-white block">Bangla</span>
+                                <span class="text-[10px] text-slate-400 font-semibold">(Confidence 99%)</span>
+                            </div>
+                            <!-- CIRCLE METER -->
+                            <div class="relative w-9 h-9 flex items-center justify-center">
+                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                    <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="text-cyan-400" stroke-dasharray="99, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <span class="absolute text-[10px] font-bold text-slate-300">99%</span>
+                            </div>
+                        </div>
+                        <div class="h-6 w-full"></div>
+                    </div>
+
+                    <!-- CARD 4: CHARACTER RECOGNITION -->
+                    <div class="glass-card p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-400">Character Recognition</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">High</span>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <span class="text-2xl font-extrabold text-white">99.2%</span>
+                            <!-- CIRCLE METER -->
+                            <div class="relative w-9 h-9 flex items-center justify-center">
+                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                    <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path class="text-cyan-400" stroke-dasharray="99, 100" stroke-width="3" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                </svg>
+                                <span class="absolute text-[10px] font-bold text-slate-300">99</span>
+                            </div>
+                        </div>
+                        <!-- MINI CYAN WAVE SVG -->
+                        <div class="h-6 w-full opacity-60">
+                            <svg class="w-full h-full" viewBox="0 0 100 25" fill="none">
+                                <path d="M0 10 Q25 22 50 8 T100 18" stroke="#06B6D4" stroke-width="2" fill="none"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
-    </main>
 
-    <!-- FOOTER -->
-    <footer class="border-t border-white/5 py-6 px-6 text-center text-xs text-slate-500">
-        <p>© 2026 Bangla Document Intelligence System • Built with EasyOCR, PyMuPDF & Streamlit Engine</p>
-    </footer>
+    </div>
 
-    <!-- INTERACTIVE JS ENGINE -->
+    <!-- INITIALIZE LUCIDE ICONS -->
     <script>
-        // Initialize Lucide Icons
         lucide.createIcons();
-
-        // Sample Bangla Text Demo
-        const sampleBanglaText = `গণপ্রজাতন্ত্রী বাংলাদেশ সরকার
-শিক্ষা মন্ত্রণালয়
-বিষয়: বাংলা ডকুমেন্ট ইন্টেলিজেন্স সিস্টেম সংক্রান্ত নোটিশ।
-
-উপরোক্ত বিষয়ে জানানো যাচ্ছে যে, বাংলা ও ইংরেজি দলিলের ওসিআর এবং রিয়েল-টাইম সার্চ সিস্টেম সফলভাবে চালু হয়েছে।`;
-
-        const textarea = document.getElementById('ocrTextArea');
-        textarea.value = sampleBanglaText;
-
-        function updateCounts() {
-            const text = textarea.value;
-            document.getElementById('charCount').textContent = text.length;
-            document.getElementById('wordCount').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
-            document.getElementById('lineCount').textContent = text.trim() ? text.split('\n').filter(l => l.trim()).length : 0;
-        }
-        updateCounts();
-        textarea.addEventListener('input', updateCounts);
-
-        // Copy Text
-        document.getElementById('copyBtn').addEventListener('click', () => {
-            navigator.clipboard.writeText(textarea.value);
-            alert('Extracted text copied to clipboard!');
-        });
-
-        // Clear Text
-        document.getElementById('clearBtn').addEventListener('click', () => {
-            textarea.value = '';
-            updateCounts();
-        });
-
-        // Live Search Highlighting
-        const searchInput = document.getElementById('searchInput');
-        const searchViewport = document.getElementById('searchResultsViewport');
-
-        searchInput.addEventListener('input', () => {
-            const query = searchInput.value.trim();
-            if (!query) {
-                searchViewport.classList.add('hidden');
-                return;
-            }
-
-            const text = textarea.value;
-            const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            const matches = (text.match(regex) || []).length;
-
-            if (matches > 0) {
-                const highlighted = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-                                        .replace(regex, '<mark>$1</mark>');
-                searchViewport.innerHTML = `<div class="mb-2 text-xs font-bold text-indigo-400">Found ${matches} match(es) for '${query}':</div>${highlighted}`;
-                searchViewport.classList.remove('hidden');
-            } else {
-                searchViewport.innerHTML = `<div class="text-xs font-semibold text-amber-400">No matches found for '${query}'</div>`;
-                searchViewport.classList.remove('hidden');
-            }
-        });
     </script>
 </body>
 </html>
