@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 # -----------------------------------------------------------------------------
-# 2. Ultra-Stunning Glassmorphic Dark Design System (CSS Engine)
+# 2. Ultra-Stunning Glassmorphic Dark Design System with Animations (CSS Engine)
 # -----------------------------------------------------------------------------
 CUSTOM_CSS = """
 <style>
@@ -45,6 +45,39 @@ CUSTOM_CSS = """
         background-color: #07090e !important;
     }
 
+    /* KEYFRAME ANIMATIONS */
+    @keyframes titleGlowPulse {
+        0% {
+            background-position: 0% 50%;
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.35));
+        }
+        50% {
+            background-position: 100% 50%;
+            filter: drop-shadow(0 0 28px rgba(168, 85, 247, 0.85));
+        }
+        100% {
+            background-position: 0% 50%;
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.35));
+        }
+    }
+
+    @keyframes gradientBarFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes greenPulse {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+        70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+    }
+
+    @keyframes cardFadeIn {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
     /* Hero Header Banner Card with Top Glowing Accent Bar */
     .hero-card {
         background: rgba(17, 22, 37, 0.85);
@@ -57,6 +90,7 @@ CUSTOM_CSS = """
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
         position: relative;
         overflow: hidden;
+        animation: cardFadeIn 0.6s ease-out forwards;
     }
 
     .hero-accent-bar {
@@ -65,7 +99,9 @@ CUSTOM_CSS = """
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+        background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899, #06b6d4, #6366f1);
+        background-size: 200% 200%;
+        animation: gradientBarFlow 4s ease infinite;
     }
 
     .hero-top-row {
@@ -99,17 +135,29 @@ CUSTOM_CSS = """
         border-radius: 9999px;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
     }
 
+    .pulse-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #34d399;
+        animation: greenPulse 2s infinite;
+    }
+
+    /* ANIMATED SHIMMER TITLE */
     .hero-title {
-        font-size: 2.4rem;
+        font-size: 2.5rem;
         font-weight: 800;
         letter-spacing: -0.03em;
         margin: 0 0 10px 0;
-        background: linear-gradient(to right, #ffffff, #e2e8f0, #a855f7, #38bdf8);
+        background: linear-gradient(90deg, #ffffff 0%, #c7d2fe 25%, #a855f7 50%, #38bdf8 75%, #ffffff 100%);
+        background-size: 200% auto;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        animation: titleGlowPulse 6s ease-in-out infinite;
     }
 
     .hero-subtitle {
@@ -130,6 +178,7 @@ CUSTOM_CSS = """
         padding: 24px;
         margin-bottom: 24px;
         box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+        animation: cardFadeIn 0.7s ease-out forwards;
     }
 
     /* Streamlit File Uploader Dark Override */
@@ -160,6 +209,7 @@ CUSTOM_CSS = """
         padding: 18px 14px;
         text-align: center;
         transition: transform 0.2s ease, border-color 0.2s ease;
+        animation: cardFadeIn 0.8s ease-out forwards;
     }
 
     .stat-card-box:hover {
@@ -281,7 +331,7 @@ def main():
         <div class="hero-accent-bar"></div>
         <div class="hero-top-row">
             <span class="hero-badge">⚡ Intelligent Bangla Document Engine</span>
-            <span class="status-badge">● EasyOCR Engine Ready</span>
+            <span class="status-badge"><span class="pulse-dot"></span> EasyOCR Engine Ready</span>
         </div>
         <h1 class="hero-title">Bangla Document Intelligence</h1>
         <p class="hero-subtitle">
@@ -469,7 +519,7 @@ def main():
                 search_query = st.text_input(
                     "Search query",
                     placeholder="Enter Bangla (e.g. বাংলা) or English keyword...",
-                    key="search_ui_input"
+                    key="search_anim_input"
                 )
 
                 if search_query:
