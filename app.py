@@ -7,6 +7,19 @@ from src.pdf_processor import pdf_to_images, load_image
 from src.ocr_engine import BanglaOCREngine
 from src.utils import save_extracted_text, search_and_highlight
 
+import warnings
+warnings.filterwarnings("ignore")
+
+def optimize_image_for_ocr(img: Image.Image, max_dim: int = 1600) -> Image.Image:
+    """Downscale oversized images for fast, stable EasyOCR memory management."""
+    w, h = img.size
+    if max(w, h) > max_dim:
+        scale = max_dim / float(max(w, h))
+        new_w = int(w * scale)
+        new_h = int(h * scale)
+        return img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    return img
+
 def run_ocr_non_blocking(ocr_engine, imgs):
     """Run heavy PyTorch OCR on a background worker thread so Streamlit WebSocket server thread stays unblocked."""
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
@@ -430,7 +443,8 @@ def main():
             if st.button("✨ Extract Bangla Text", type="primary", width="stretch"):
                 with st.spinner("⏳ Extracting text via EasyOCR Neural Network... (Takes ~10-20s per page on CPU for high precision)"):
                     ocr = get_ocr_engine()
-                    results = run_ocr_non_blocking(ocr, images)
+                    optimized_images = [optimize_image_for_ocr(img) for img in images]
+                    results = run_ocr_non_blocking(ocr, optimized_images)
                     extracted_text = results["full_text"]
 
                     st.session_state["extracted_text"] = extracted_text
