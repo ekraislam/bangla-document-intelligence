@@ -39,7 +39,10 @@ class BanglaOCREngine:
             lines = [res[1] for res in results]
             extracted_text = "\n".join(lines)
             
-        return extracted_text.strip()
+        cleaned = extracted_text.strip()
+        if not cleaned:
+            return "[No readable text detected on this page]"
+        return cleaned
 
     def process_document_pages(self, images: List[Image.Image]) -> Dict[str, Any]:
         """

@@ -29,6 +29,7 @@ def pdf_to_images(pdf_bytes: bytes, dpi: int = 150) -> List[Image.Image]:
         
         # Convert pixmap to PIL Image
         img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+        pix = None  # Immediately free C-level pixmap buffer
         img = resize_image_if_needed(img)
         images.append(img)
         

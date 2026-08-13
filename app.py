@@ -373,6 +373,12 @@ def main():
     if uploaded_file is not None:
         file_bytes = uploaded_file.read()
         file_name = uploaded_file.name
+
+        # Flush stale session state if a new file is uploaded
+        if st.session_state.get("extracted_file_name") != file_name:
+            st.session_state.pop("extracted_text", None)
+            st.session_state.pop("saved_path", None)
+
         file_size_str = format_bytes(len(file_bytes))
         file_ext = file_name.split(".")[-1].upper()
 
@@ -506,6 +512,9 @@ def main():
                     height=280,
                     help="Edit extracted text directly inside this reader."
                 )
+                if edited_text != extracted_text:
+                    st.session_state["extracted_text"] = edited_text
+                    extracted_text = edited_text
 
                 # Artifact Action Toolbar
                 btn1, btn2, btn3 = st.columns([1, 1, 1])
