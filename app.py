@@ -7,8 +7,25 @@ from src.pdf_processor import pdf_to_images, load_image
 from src.ocr_engine import BanglaOCREngine
 from src.utils import save_extracted_text, search_and_highlight
 
+import os
+import sys
+import contextlib
 import warnings
 warnings.filterwarnings("ignore")
+
+@contextlib.contextmanager
+def suppress_stdout_stderr():
+    """Suppress stdout and stderr I/O streams to prevent terminal pipe crashes on Windows."""
+    with open(os.devnull, 'w', encoding='utf-8') as devnull:
+        old_stdout = sys.stdout
+        old_stderr = sys.stderr
+        sys.stdout = devnull
+        sys.stderr = devnull
+        try:
+            yield
+        finally:
+            sys.stdout = old_stdout
+            sys.stderr = old_stderr
 
 def optimize_image_for_ocr(img: Image.Image, max_dim: int = 1600) -> Image.Image:
     """Downscale oversized images for fast, stable EasyOCR memory management."""
@@ -21,9 +38,13 @@ def optimize_image_for_ocr(img: Image.Image, max_dim: int = 1600) -> Image.Image
     return img
 
 def run_ocr_non_blocking(ocr_engine, imgs):
-    """Run heavy PyTorch OCR on a background worker thread so Streamlit WebSocket server thread stays unblocked."""
+    """Run heavy PyTorch OCR on a worker thread silently to prevent WebSocket timeout connection drops."""
+    def worker():
+        with suppress_stdout_stderr():
+            return ocr_engine.process_document_pages(imgs)
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-        future = executor.submit(ocr_engine.process_document_pages, imgs)
+        future = executor.submit(worker)
         return future.result()
 
 # -----------------------------------------------------------------------------
@@ -324,8 +345,11 @@ def format_bytes(size_in_bytes: int) -> str:
 
 @st.cache_resource
 def get_ocr_engine():
-    """Lazy load and cache EasyOCR engine instance."""
-    return BanglaOCREngine(languages=config.OCR_LANGUAGES, gpu=config.USE_GPU)
+    """Pre-initialize and cache EasyOCR engine silently at app startup."""
+    with suppress_stdout_stderr():
+        engine = BanglaOCREngine(languages=config.OCR_LANGUAGES, gpu=config.USE_GPU)
+        engine._initialize_reader()
+    return engine
 
 
 # -----------------------------------------------------------------------------
