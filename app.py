@@ -397,11 +397,7 @@ def main():
     if uploaded_file is not None:
         file_bytes = uploaded_file.read()
         file_name = uploaded_file.name
-
-        # Flush stale session state if a new file is uploaded
-        if st.session_state.get("extracted_file_name") != file_name:
-            st.session_state.pop("extracted_text", None)
-            st.session_state.pop("saved_path", None)
+        current_file_id = f"{file_name}_{len(file_bytes)}"
 
         file_size_str = format_bytes(len(file_bytes))
         file_ext = file_name.split(".")[-1].upper()
@@ -478,12 +474,13 @@ def main():
                     extracted_text = results["full_text"]
 
                     st.session_state["extracted_text"] = extracted_text
-                    st.session_state["extracted_file_name"] = file_name
+                    st.session_state["processed_file_id"] = current_file_id
 
                     saved_path = save_extracted_text(extracted_text, file_name)
                     st.session_state["saved_path"] = saved_path
+                    st.rerun()
 
-            if "extracted_text" in st.session_state and st.session_state.get("extracted_file_name") == file_name:
+            if st.session_state.get("processed_file_id") == current_file_id and "extracted_text" in st.session_state:
                 extracted_text = st.session_state["extracted_text"]
                 saved_path = st.session_state.get("saved_path")
 
