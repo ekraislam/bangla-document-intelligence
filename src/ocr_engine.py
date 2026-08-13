@@ -30,7 +30,7 @@ class BanglaOCREngine:
         img_np = np.array(pil_image)
         
         # EasyOCR readtext returns list of strings when detail=0
-        results = self.reader.readtext(img_np, detail=detail, paragraph=True)
+        results = self.reader.readtext(img_np, detail=0)
         
         if detail == 0:
             extracted_text = "\n".join(results)
