@@ -1,10 +1,17 @@
 import streamlit as st
 from PIL import Image
 import io
+import concurrent.futures
 import config
 from src.pdf_processor import pdf_to_images, load_image
 from src.ocr_engine import BanglaOCREngine
 from src.utils import save_extracted_text, search_and_highlight
+
+def run_ocr_non_blocking(ocr_engine, imgs):
+    """Run heavy PyTorch OCR on a background worker thread so Streamlit WebSocket server thread stays unblocked."""
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(ocr_engine.process_document_pages, imgs)
+        return future.result()
 
 # -----------------------------------------------------------------------------
 # 1. Page Configuration
@@ -423,7 +430,7 @@ def main():
             if st.button("✨ Extract Bangla Text", type="primary", width="stretch"):
                 with st.spinner("⏳ Extracting text via EasyOCR Neural Network... (Takes ~10-20s per page on CPU for high precision)"):
                     ocr = get_ocr_engine()
-                    results = ocr.process_document_pages(images)
+                    results = run_ocr_non_blocking(ocr, images)
                     extracted_text = results["full_text"]
 
                     st.session_state["extracted_text"] = extracted_text
