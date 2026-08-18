@@ -3,9 +3,9 @@ from PIL import Image
 import io
 import concurrent.futures
 import config
-from src.pdf_processor import pdf_to_images, load_image
+from src.pdf_processor import pdf_to_images, load_image, resize_image_if_needed
 from src.ocr_engine import BanglaOCREngine
-from src.utils import save_extracted_text, search_and_highlight
+from src.utils import save_extracted_text, search_and_highlight, validate_file_upload
 
 import os
 import sys
@@ -27,21 +27,11 @@ def suppress_stdout_stderr():
             sys.stdout = old_stdout
             sys.stderr = old_stderr
 
-def optimize_image_for_ocr(img: Image.Image, max_dim: int = 1600) -> Image.Image:
-    """Downscale oversized images for fast, stable EasyOCR memory management."""
-    w, h = img.size
-    if max(w, h) > max_dim:
-        scale = max_dim / float(max(w, h))
-        new_w = int(w * scale)
-        new_h = int(h * scale)
-        return img.resize((new_w, new_h), Image.Resampling.LANCZOS)
-    return img
-
-def run_ocr_non_blocking(ocr_engine, imgs):
+def run_ocr_non_blocking(ocr_engine: BanglaOCREngine, imgs, preprocess: bool = False):
     """Run heavy PyTorch OCR on a worker thread silently to prevent WebSocket timeout connection drops."""
     def worker():
         with suppress_stdout_stderr():
-            return ocr_engine.process_document_pages(imgs)
+            return ocr_engine.process_document_pages(imgs, preprocess=preprocess)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
         future = executor.submit(worker)
@@ -384,6 +374,14 @@ def main():
             <div>• <strong>Storage</strong>: Local UTF-8 Output</div>
         </div>
         """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        st.markdown("### ⚙️ OCR Settings")
+        enable_clahe = st.checkbox(
+            "OpenCV Preprocessing (CLAHE + Denoise)",
+            value=False,
+            help="Applies contrast enhancement and noise reduction for scanned documents."
+        )
 
     # -------------------------------------------------------------------------
     # Drag-and-Drop Document Upload Section
@@ -397,6 +395,13 @@ def main():
     if uploaded_file is not None:
         file_bytes = uploaded_file.read()
         file_name = uploaded_file.name
+        
+        # File Validation Check
+        is_valid, err_msg = validate_file_upload(file_name, len(file_bytes))
+        if not is_valid:
+            st.error(f"❌ File Validation Error: {err_msg}")
+            return
+
         current_file_id = f"{file_name}_{len(file_bytes)}"
 
         file_size_str = format_bytes(len(file_bytes))
@@ -469,8 +474,8 @@ def main():
             if st.button("✨ Extract Bangla Text", type="primary", width="stretch"):
                 with st.spinner("⏳ Extracting text via EasyOCR Neural Network... (Takes ~10-20s per page on CPU for high precision)"):
                     ocr = get_ocr_engine()
-                    optimized_images = [optimize_image_for_ocr(img) for img in images]
-                    results = run_ocr_non_blocking(ocr, optimized_images)
+                    optimized_images = [resize_image_if_needed(img) for img in images]
+                    results = run_ocr_non_blocking(ocr, optimized_images, preprocess=enable_clahe)
                     extracted_text = results["full_text"]
 
                     st.session_state["extracted_text"] = extracted_text
